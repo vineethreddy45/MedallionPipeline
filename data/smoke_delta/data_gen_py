@@ -1,0 +1,51 @@
+import csv, os, random
+
+random.seed(42)
+os.makedirs("data/landing", exist_ok=True)
+
+first = ["James","Mary","Robert","Priya","David","Ananya","Michael","Sarah","Arjun","Emily",
+         "Daniel","Kavya","Chris","Divya","Kevin"]
+last  = ["Smith","Patel","Johnson","Reddy","Brown","Sharma","Jones","Garcia","Nair","Miller",
+         "Davis","Iyer","Wilson","Khan","Moore"]
+states = ["NC","TX","CA","NY","FL","WA","OH","GA"]
+
+holders = []
+for i in range(1, 16):
+    holders.append({"policyholder_id": i, "first_name": first[i-1], "last_name": last[i-1],
+                    "dob": f"19{70+i}-0{(i%9)+1}-15", "state": states[i % len(states)],
+                    "email": f"{first[i-1].lower()}.{last[i-1].lower()}@example.com"})
+
+policies = []
+for i in range(1, 21):
+    policies.append({"policy_id": i, "policyholder_id": (i % 15) + 1,
+                     "policy_type": ["Auto","Home","Life"][i % 3],
+                     "premium": round(random.uniform(800, 3500), 2),
+                     "start_date": "2023-01-01", "end_date": "2025-12-31",
+                     "status": "Active"})
+
+statuses = ["Submitted", "approved", "APPROVED", " Approved ", "Denied", "paid"]
+claims = []
+for i in range(1, 41):
+    claims.append({"claim_id": i, "policy_id": (i % 20) + 1,
+                   "claim_date": f"2024-0{(i%9)+1}-{(i%27)+1:02d}",
+                   "claim_type": ["Collision","Theft","Fire","Water Damage","Medical"][i % 5],
+                   "amount": round(random.uniform(200, 15000), 2),
+                   "status": statuses[i % len(statuses)],
+                   "updated_at": "2024-10-01 08:00:00"})
+
+# --- deliberate dirt (Silver's job to catch) ---
+claims.append(dict(claims[4]))          # duplicate of claim 5 (source re-sent it)
+claims[6]["amount"] = ""                # claim 7: missing amount
+claims[8]["amount"] = -500              # claim 9: negative amount
+claims[10]["policy_id"] = 999           # claim 11: policy that doesn't exist
+claims[12]["claim_date"] = "2024-13-45" # claim 13: impossible date
+
+def write_csv(name, rows):
+    with open(f"data/landing/{name}.csv", "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        w.writeheader(); w.writerows(rows)
+    print(name, len(rows), "rows")
+
+write_csv("policyholders", holders)
+write_csv("policies", policies)
+write_csv("claims", claims)
