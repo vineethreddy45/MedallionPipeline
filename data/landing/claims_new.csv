@@ -1,7 +1,0 @@
-claim_id,policy_id,claim_date,claim_type,amount,status,updated_at
-41,5,2024-11-02,Collision,3200.5,Submitted,2024-11-02 10:00:00
-42,12,2024-11-03,Theft,7800.0,approved,2024-11-03 10:00:00
-43,7,2024-11-05,Medical,1250.75, Approved ,2024-11-05 10:00:00
-44,18,2024-11-08,Fire,15000.0,paid,2024-11-08 10:00:00
-45,3,2024-11-10,Water Damage,940.2,Denied,2024-11-10 10:00:00
-46,9,2024-11-11,Collision,,Submitted,2024-11-11 10:00:00
